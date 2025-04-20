@@ -53,12 +53,40 @@ public class MapTest {
     }
 
     @Test
+    @DisplayName("getCharacterCoordinates Test")
+    void testGetCharacterCoordinates() {
+        assertEquals(new Point(7, 8), map.getCharacterCoordinates("7,8"),
+                "getCharacterCoordinates should return the coordinate (7,8)");
+        assertEquals(new Point(17, 8), map.getCharacterCoordinates("17,8G"),
+                "getCharacterCoordinates should return the coordinate (17,8)");
+        assertEquals(new Point(7, 18), map.getCharacterCoordinates("7,18"),
+                "getCharacterCoordinates should return the coordinate (7,18)");
+        assertEquals(new Point(17, 18), map.getCharacterCoordinates("17,18"),
+                "getCharacterCoordinates should return the coordinate (17,18)");
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> map.getCharacterCoordinates("7,"));
+        assertEquals("Coordinates line must be at least 3 characters", exception.getMessage(),
+                "getCharacterCoordinates should return \"Coordinates line must be at least 3 characters\"");
+        exception = assertThrows(IllegalArgumentException.class, () -> map.getCharacterCoordinates("17,"));
+        assertEquals("Coordinates line does not contain y coordinates", exception.getMessage(),
+                "getCharacterCoordinates should return \"Coordinates line does not contain y coordinates\"");
+    }
+
+    @Test
     @DisplayName("moveCharacter Test")
     void testMoveCharacter() {
-        assertEquals(new Point(1, 9), map.moveCharacter("file1.txt"),
+        assertEquals(new Point(1, 9), map.moveCharacter("src/main/resources/instructions/file1.txt"),
                 "moveCharacter should return the coordinate (1,9) with file1.txt");
-        assertEquals(new Point(9, 2), map.moveCharacter("file2.txt"),
+        assertEquals(new Point(9, 2), map.moveCharacter("src/main/resources/instructions/file2.txt"),
                 "moveCharacter should return the coordinate (9,2) with file2.txt");
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> map.moveCharacter("src/main/resources/instructions/file3.txt"));
+        assertEquals("File was not found.", exception.getMessage(),
+                "moveCharacter should have thrown an FileNotFoundException.");
+        exception = assertThrows(IllegalArgumentException.class, () -> map.moveCharacter("src/main/resources/instructions/file4.txt"));
+        assertEquals("Wrong origin position.", exception.getMessage(),
+                "moveCharacter should have thrown a Wrong origin position Exception.");
+        exception = assertThrows(IllegalArgumentException.class, () -> map.moveCharacter("src/main/resources/instructions/file5.txt"));
+        assertEquals("File wasn't as expected.", exception.getMessage(),
+                "moveCharacter should have thrown a File wasn't as expected Exception.");
 
     }
 }
